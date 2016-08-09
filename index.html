@@ -1,0 +1,64 @@
+<!doctype html>
+<meta charset="UTF-8" />
+<script src="svg2-cr-doc.js"></script>
+<style>
+    .DoC_rejected.DoC_noResponse {
+        background: orange;
+    }
+
+    .DoC_rejected.DoC_negativeResponse {
+        background: red;
+    }
+
+    .DoC_positiveResponse, .DoC_accepted {
+        background: lightgreen;
+    }
+    .DoC_accepted.DoC_negativeResponse {
+        background: red;
+    }
+
+    #legend li {
+        margin-right: 10em;
+    }
+
+    .issue-list li {
+        width: 100%;
+        font-family: monospace;
+        margin-bottom: 1em;
+    }
+
+    .issue-list li table {
+        width: 90%;
+    }
+
+    .issue-list li table td:first-child {
+        width: 6em;
+    }
+
+    .github-issue-link::before {
+        content: '#';
+    }
+
+    #loading {
+        padding-left: 1em;
+        padding-top: 1em;
+    }
+
+
+</style>
+<div id="issues">
+<h1>SVG 2 Disposition of Comments for 2016-08-?? CR</h1>
+<p>Editor's draft: <a href="https://svgwg.org/svg2-draft/">https://svgwg.org/svg2-draft/</a></p>
+<div id="legend">
+<p>The following color coding convention is used for comments:</p>
+<ul>
+<li class="DoC_accepted">Accepted or Rejected and positive response</li>
+<li class="DoC_rejected DoC_noResponse">Rejected and no response</li>
+<li class="DoC_rejected DoC_negativeResponse">Rejected and negative response</li>
+</ul>
+</div>
+<p>Comments:</p>
+</div>
+<div id="loading">
+<p id="message">Loading</p>
+</div>
