@@ -61,31 +61,30 @@ function output_issue_to_list(list, issue) {
     var reply = "";
     var response = "";
     for (var label of issue.labels) {
+        classes.push(label.name);
         switch (label.name) {
             case "DoC_accepted":
                 reply += "Accepted";
-                classes.push(label.name);
                 break;
             case "DoC_rejected":
                 reply += "Rejected";
-                classes.push(label.name);
+                break;
+            case "DoC_deferred":
+                reply += "Deferred";
                 break;
             case "DoC_negativeResponse":
                 response += " negative response";
-                classes.push(label.name);
                 break;
             case "DoC_positiveResponse":
                 response += " positive response";
-                classes.push(label.name);
                 break;
             case "DoC_noResponse":
                 response += " no response";
-                classes.push(label.name);
                 break;
         }
     }
 
-    output_issue_field('Closed', reply + ' and ' + response);
+    output_issue_field('Closed', reply + (response ? (' and ' + response):''));
     issue_table.setAttribute('class', classes.join(' '));
  }
 
@@ -158,7 +157,7 @@ function update_loading_message() {
 }
 
 window.onload=function() {
-    var queries = ["labels=DoC_accepted", "labels=DoC_rejected"];
+    var queries = ["labels=DoC_accepted", "labels=DoC_rejected", "labels=DoC_deferred"];
     get_json_issues(queries);
 }
     
