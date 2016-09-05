@@ -100,9 +100,17 @@ function output_list(issues) {
     var issue_list = new_issue_list(document.querySelector("#issues"));
     issue_list.setAttribute("class", "issue-list");
 
+    var issue_count = 0;
+
     for (var issue of issues) {
         output_issue_to_list(issue_list, issue);
+        issue_count ++;
     }
+
+    var insert_issue_count = document.querySelector("#issue_count");
+    console.log(insert_issue_count);
+    if (insert_issue_count)
+        insert_issue_count.innerHTML = issue_count;
 }
 
 function display(issues) {
