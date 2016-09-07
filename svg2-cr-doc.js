@@ -112,7 +112,6 @@ function output_list(issues) {
         insert_issue_count.innerHTML = issue_count;
 
     for (var counter in counters) {
-        console.log(counter);
         insert_issue_count = document.querySelector("#" + counter + "_count");
         if (insert_issue_count) insert_issue_count.innerHTML = counters[counter];
     }
