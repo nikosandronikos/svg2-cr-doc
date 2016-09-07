@@ -21,96 +21,102 @@ function httpGetAsync(theUrl, callback, callback_data, page)
     xmlHttp.send(null);
 }
 
-function output_issue_to_list(list, issue) {
-    var li = document.createElement("li");
-    li.setAttribute("id", "issue_"+issue.number);
-    list.appendChild(li); 
-   
-    var link = document.createElement("a");
-    link.setAttribute("href", "https://github.com/w3c/svgwg/issues/" + issue.number);
-    link.setAttribute("class", "github-issue-link");
-    link.innerHTML = issue.number;
-
-    var issue_table = document.createElement("table");
-    li.appendChild(issue_table);
-    
-    function output_issue_field(name, value) {
-        var row = document.createElement("tr");
-        var name_cell = document.createElement("td");
-        var value_cell = document.createElement("td");
-
-        name_cell.innerHTML = name;
-
-        if (typeof value === 'string') {
-            value_cell.innerHTML = escapeXML(value);
-        } else {
-            value_cell.appendChild(value);
-        }
-
-        issue_table.appendChild(row);
-        row.appendChild(name_cell);
-        row.appendChild(value_cell);
-        //issue_table.innerHTML += name + ":" + ' '.repeat(10 - name.length) + value.toString()+"\n";
-    }
-
-    output_issue_field('Issue', link);
-    output_issue_field('Summary', issue.title);
-    output_issue_field('From', issue.user.login);
-
-    var classes = [];
-    var reply = "";
-    var response = "";
-    for (var label of issue.labels) {
-        classes.push(label.name);
-        switch (label.name) {
-            case "DoC_accepted":
-                reply += "Accepted";
-                break;
-            case "DoC_rejected":
-                reply += "Rejected";
-                break;
-            case "DoC_deferred":
-                reply += "Deferred";
-                break;
-            case "DoC_negativeResponse":
-                response += " negative response";
-                break;
-            case "DoC_positiveResponse":
-                response += " positive response";
-                break;
-            case "DoC_noResponse":
-                response += " no response";
-                break;
-        }
-    }
-
-    output_issue_field('Closed', reply + (response ? (' and ' + response):''));
-    issue_table.setAttribute('class', classes.join(' '));
- }
-
-function new_issue_list(chapter_container) {
-    var list = document.createElement("ul");
-    list.setAttribute("class", "table-body");
-    chapter_container.appendChild(list);
-
-    return list;
-}
-
 function output_list(issues) {
-    var issue_list = new_issue_list(document.querySelector("#issues"));
+    var issue_list  = document.createElement("ul");
+    document.querySelector("#issues").appendChild(issue_list);
     issue_list.setAttribute("class", "issue-list");
 
     var issue_count = 0;
+    var counters = new Array();
+
+    function output_issue_to_list(issue) {
+        var li = document.createElement("li");
+        li.setAttribute("id", "issue_"+issue.number);
+        issue_list.appendChild(li);
+
+        var link = document.createElement("a");
+        link.setAttribute("href", "https://github.com/w3c/svgwg/issues/" + issue.number);
+        link.setAttribute("class", "github-issue-link");
+        link.innerHTML = issue.number;
+
+        var issue_table = document.createElement("table");
+        li.appendChild(issue_table);
+
+        function output_issue_field(name, value) {
+            var row = document.createElement("tr");
+            var name_cell = document.createElement("td");
+            var value_cell = document.createElement("td");
+
+            name_cell.innerHTML = name;
+
+            if (typeof value === 'string') {
+                value_cell.innerHTML = escapeXML(value);
+            } else {
+                value_cell.appendChild(value);
+            }
+
+            issue_table.appendChild(row);
+            row.appendChild(name_cell);
+            row.appendChild(value_cell);
+            //issue_table.innerHTML += name + ":" + ' '.repeat(10 - name.length) + value.toString()+"\n";
+        }
+
+        output_issue_field('Issue', link);
+        output_issue_field('Summary', issue.title);
+        output_issue_field('From', issue.user.login);
+
+        var classes = [];
+        var reply = "";
+        var response = "";
+        for (var label of issue.labels) {
+            counters[label.name] = counters[label.name] + 1 || 1;
+            classes.push(label.name);
+            switch (label.name) {
+                case "DoC_accepted":
+                    reply += "Accepted";
+                    break;
+                case "DoC_rejected":
+                    reply += "Rejected";
+                    break;
+                case "DoC_deferred":
+                    reply += "Deferred";
+                    break;
+                case "DoC_negativeResponse":
+                    response += "negative response";
+                    break;
+                case "DoC_positiveResponse":
+                    response += "positive response";
+                    break;
+                case "DoC_noResponse":
+                    response += "no response";
+                    break;
+            }
+        }
+
+        var closed_value = reply + (response ? (' and ' + response):'')
+
+        output_issue_field('Closed', closed_value);
+        issue_table.setAttribute('class', classes.join(' '));
+
+        var counter = closed_value.replace(/\s/g, '_');
+        counters[counter] = counters[counter] + 1 || 1;
+     }
 
     for (var issue of issues) {
-        output_issue_to_list(issue_list, issue);
+        output_issue_to_list(issue);
         issue_count ++;
     }
 
     var insert_issue_count = document.querySelector("#issue_count");
-    console.log(insert_issue_count);
     if (insert_issue_count)
         insert_issue_count.innerHTML = issue_count;
+
+    for (var counter in counters) {
+        console.log(counter);
+        insert_issue_count = document.querySelector("#" + counter + "_count");
+        if (insert_issue_count) insert_issue_count.innerHTML = counters[counter];
+    }
+
 }
 
 function display(issues) {
